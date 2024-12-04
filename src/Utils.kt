@@ -1,3 +1,4 @@
+import java.io.Serializable
 import java.math.BigInteger
 import java.security.MessageDigest
 import kotlin.io.path.Path
@@ -19,3 +20,14 @@ fun String.md5() = BigInteger(1, MessageDigest.getInstance("MD5").digest(toByteA
  * The cleaner shorthand for printing output.
  */
 fun Any?.println() = println(this)
+
+/**
+ * Quadruple class for Kotlin
+ */
+data class Quadruple<A,B,C,D>(var first: A, var second: B, var third: C, var fourth: D): Serializable {
+    override fun toString(): String = "($first, $second, $third, $fourth)"
+
+    fun checkIsCopy(another: Quadruple<A, B, C, D>): Boolean {
+        return setOf(first, second, third, fourth) == setOf(another.first, another.second, another.third, another.fourth)
+    }
+}
