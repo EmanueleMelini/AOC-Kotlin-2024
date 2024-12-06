@@ -1,5 +1,3 @@
-import java.time.LocalDateTime
-import java.time.Period
 import kotlin.time.TimeSource
 
 fun main() {
