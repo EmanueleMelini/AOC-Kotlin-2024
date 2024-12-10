@@ -122,23 +122,25 @@ fun doPartsWithTimes(input: List<String>, part1: (List<String>) -> Any, part2: (
   val source = TimeSource.Monotonic
   val start = source.markNow()
 
-  part1(input).println()
+  val part1Result = part1(input)
+  println("Part 1 result: $part1Result")
 
   val part1Time = source.markNow()
   val part1Diff = part1Time - start
 
-  println("Part 1: ${part1Diff.inWholeMilliseconds}ms")
+  println("Part 1 time: ${part1Diff.inWholeMilliseconds}ms")
 
-  part2(input).println()
+  val part2Result = part2(input)
+  println("Part 2 result: $part2Result")
 
   val part2Time = source.markNow()
   val part2Diff = part2Time - part1Time
 
-  println("Part 2: ${part2Diff.inWholeMilliseconds}ms")
+  println("Part 2 time: ${part2Diff.inWholeMilliseconds}ms")
 
   val end = source.markNow()
   val diff = end - start
 
-  println("Total: ${diff.inWholeMilliseconds}ms")
+  println("Total time: ${diff.inWholeMilliseconds}ms")
 
 }
