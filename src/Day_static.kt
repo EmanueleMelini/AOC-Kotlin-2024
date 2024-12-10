@@ -10,8 +10,7 @@ fun main() {
     }
 
     val input = readInput("Day_")
-    part1(input).println()
-    part2(input).println()
+    doPartsWithTimes(input, ::part1, ::part2)
 
 }
 
