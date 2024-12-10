@@ -15,8 +15,8 @@ fun main() {
                         for (y in startJ..<rows.size) {
                             if (antennas[x][y] == antenna) {
 
-                                val xDist = abs(x - i);
-                                val yDist = abs(y - j);
+                                val xDist = abs(x - i)
+                                val yDist = abs(y - j)
 
                                 if ((i - xDist) >= 0) {
                                     if (y < j && (j + yDist) < rows.size) {
@@ -62,8 +62,8 @@ fun main() {
                                 uniqueAntinodes.add(Pair(i, j))
                                 uniqueAntinodes.add(Pair(x, y))
 
-                                val xDist = abs(x - i);
-                                val yDist = abs(y - j);
+                                val xDist = abs(x - i)
+                                val yDist = abs(y - j)
 
                                 var antinode1 = Pair(i - xDist, j - yDist)
                                 var antinode2 = Pair(x + xDist, y + yDist)
