@@ -58,26 +58,6 @@ fun main() {
 
 }
 
-private fun String.getDirXY(): List<Int> {
-    return when (this) {
-        "UP" -> listOf(-1, 0)
-        "RX" -> listOf(0, 1)
-        "DW" -> listOf(1, 0)
-        "LF" -> listOf(0, -1)
-        else -> listOf(0, 0)
-    }
-}
-
-private fun String.switchDir(): String {
-    return when (this) {
-        "UP" -> "RX"
-        "RX" -> "DW"
-        "DW" -> "LF"
-        "LF" -> "UP"
-        else -> ""
-    }
-}
-
 private fun parse6(inputData: List<String>):
         Quadruple<Pair<Int, Int>, MutableList<MutableList<Pair<String, String>>>, MutableSet<Pair<Int, Int>>, MutableSet<Pair<String, Pair<Int, Int>>>> {
 
