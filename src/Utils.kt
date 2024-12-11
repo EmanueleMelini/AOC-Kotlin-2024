@@ -173,7 +173,7 @@ fun printAndWrite(day: String, print: String) {
         it.newLine()
         it.close()
     }
-    //println(print)
+    println(print)
 }
 
 fun clearDump(day: String) {
