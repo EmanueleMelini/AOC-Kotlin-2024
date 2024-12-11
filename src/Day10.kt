@@ -7,21 +7,25 @@ fun main() {
 
         for ((i, rows) in trails.withIndex()) {
             for ((j, position) in rows.withIndex()) {
-                if (position == "0") {
+                if (position == 0) {
                     startingPositions.add(Pair(Pair(i, j), mutableSetOf()))
                 }
             }
         }
 
-        var dir = "RX"
+        var count2 = 0
+        val uniques2 = mutableSetOf<Quadruple<Int, Int, Int, Int>>()
 
         for ((i, position) in startingPositions.withIndex()) {
+
+            var dir = "RX"
 
             val positionsOfOkPaths = mutableSetOf<Triple<Int, Int, Int>>()
 
             var keepGoing = true
             var searchingValue = 1
             var currentPosition = Pair(position.first.first, position.first.second)
+            val zeroPosition = Pair(position.first.first, position.first.second)
             val lastPosition = mutableListOf<Triple<Int, Int, String>>()
             lastPosition.add(Triple(currentPosition.first, currentPosition.second, dir))
             var startingDirections = 1
@@ -29,6 +33,10 @@ fun main() {
             printAndWrite("Day10", "Starting at $currentPosition")
 
             var isThisPathOk = false
+
+            val thisCount = explore(trails, currentPosition, zeroPosition, uniques2)
+            count2 += thisCount
+            println("New count $zeroPosition = $thisCount - $count2")
 
             while (keepGoing) {
 
@@ -102,18 +110,8 @@ fun main() {
                         isThisPathOk = false
                     } else {
 
-                        printAndWrite("Day10", "[$i/${startingPositions.size - 1}] Finished direction cycle, going back to ${trails[lastPosition[lastPosition.size - 1].first][lastPosition[lastPosition.size - 1].second]} ${lastPosition[lastPosition.size - 1]}")
-                        currentPosition = Pair(lastPosition[lastPosition.size - 1].first, lastPosition[lastPosition.size - 1].second)
-                        dir = lastPosition[lastPosition.size - 1].third
-                        printAndWrite("Day10", "[$i/${startingPositions.size - 1}] Removed ${lastPosition[lastPosition.size - 1]} from the lastPosition stack]")
-                        lastPosition.removeLastOrNull()
-                        searchingValue--
-
-                        if (isThisPathOk) {
-                            positionsOfOkPaths.add(Triple(currentPosition.first, currentPosition.second, trails[currentPosition.first][currentPosition.second].toInt()))
-                        }
-
-                        while (lastPosition.isNotEmpty() && dir == "UP") {
+                        var keepPopping = true
+                        do {
                             printAndWrite("Day10", "[$i/${startingPositions.size - 1}] Finished direction cycle, going back to ${trails[lastPosition[lastPosition.size - 1].first][lastPosition[lastPosition.size - 1].second]} ${lastPosition[lastPosition.size - 1]}")
                             currentPosition = Pair(lastPosition[lastPosition.size - 1].first, lastPosition[lastPosition.size - 1].second)
                             dir = lastPosition[lastPosition.size - 1].third
@@ -124,7 +122,12 @@ fun main() {
                             if (isThisPathOk) {
                                 positionsOfOkPaths.add(Triple(currentPosition.first, currentPosition.second, trails[currentPosition.first][currentPosition.second].toInt()))
                             }
-                        }
+
+                            if (!(lastPosition.isNotEmpty() && dir == "UP")) {
+                                keepPopping = false
+                            }
+                        } while(keepPopping)
+
                     }
 
                 }
@@ -135,7 +138,11 @@ fun main() {
 
             }
 
+            println("Old count ${Pair(position.first.first, position.first.second)} = ${position.second.size}")
+
         }
+
+        count2.println()
 
         return startingPositions.sumOf { it.second.size }
     }
@@ -151,6 +158,34 @@ fun main() {
 
 }
 
-private fun parse10(inputData: List<String>): List<List<String>> {
-    return inputData.map { it.toList().map { char -> char.toString() } }
+private fun parse10(inputData: List<String>): List<List<Int>> {
+    return inputData.map { it.toList().map { char -> char.toString().toInt() } }
+}
+
+private fun explore(trails: List<List<Int>>, currentPosition: Pair<Int, Int>, zeroPosition: Pair<Int, Int>, uniqueNines: MutableSet<Quadruple<Int, Int, Int, Int>>): Int {
+
+    if (trails[currentPosition.first][currentPosition.second] == 9) {
+        if (uniqueNines.find { it.first == zeroPosition.first && it.second == zeroPosition.second && it.third == currentPosition.first && it.fourth == currentPosition.second } != null) {
+            return 0
+        } else {
+            uniqueNines.add(Quadruple(zeroPosition.first, zeroPosition.second, currentPosition.first, currentPosition.second))
+            return 1
+        }
+    }
+
+    var sum = 0
+
+    for (d in listOf("RX", "DW", "LF", "UP")) {
+
+        val (dirX, dirY) = d.getDirXY()
+        val searchingPosition = Pair(currentPosition.first + dirX, currentPosition.second + dirY)
+        if (searchingPosition.first >= 0 && searchingPosition.first < trails[0].size && searchingPosition.second >= 0 && searchingPosition.second < trails.size
+            && trails[searchingPosition.first][searchingPosition.second] - trails[currentPosition.first][currentPosition.second] == 1) {
+            sum += explore(trails, searchingPosition, zeroPosition, uniqueNines)
+        }
+
+    }
+
+    return sum
+
 }
