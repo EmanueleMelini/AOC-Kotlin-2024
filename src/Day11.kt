@@ -32,35 +32,6 @@ private fun parse11(inputData: List<String>): MutableList<Long> {
     return inputData[0].split(" ").map { char -> char.toLong() }.toMutableList()
 }
 
-private fun doBlinks(blinks: Int, stones: MutableList<Long>): Int {
-    for (blink in 1..blinks) {
-        if (blinks == 75) println("Blink $blink")
-        val stoneIterator = stones.listIterator()
-        while (stoneIterator.hasNext()) {
-            val stone = stoneIterator.next()
-            val stoneSize = stone.toString().length
-            when {
-                stone == 0L -> {
-                    stoneIterator.remove()
-                    stoneIterator.add(1)
-                }
-                stoneSize % 2 == 0 -> {
-                    val leftStone = stone.toString().substring(0, stoneSize / 2).toLong()
-                    val rightStone = stone.toString().substring(stoneSize / 2, stoneSize).toLong()
-                    stoneIterator.remove()
-                    stoneIterator.add(leftStone)
-                    stoneIterator.add(rightStone)
-                }
-                else -> {
-                    stoneIterator.remove()
-                    stoneIterator.add(stone * 2024)
-                }
-            }
-        }
-    }
-    return stones.size
-}
-
 private fun blinkStone(stone: Long): List<Long> {
     return when {
         stone == 0L -> listOf(1L)
