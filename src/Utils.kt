@@ -118,7 +118,7 @@ fun Int.toTernaryString(): String {
 
 }
 
-fun doPartsWithTimes(input: List<String>, part1: (List<String>) -> Any, part2: (List<String>) -> Any) {
+fun <A, B> doPartsWithTimes(input: A, part1: (A) -> B, part2: (A) -> B, initialTime: TimeSource.Monotonic.ValueTimeMark? = null) {
 
     val source = TimeSource.Monotonic
     val start = source.markNow()
@@ -140,10 +140,30 @@ fun doPartsWithTimes(input: List<String>, part1: (List<String>) -> Any, part2: (
     println("Part 2 time: ${part2Diff.inWholeMilliseconds}ms")
 
     val end = source.markNow()
-    val diff = end - start
+    val diff = end - (initialTime ?: start)
 
     println("Total time: ${diff.inWholeMilliseconds}ms")
 
+}
+
+fun <A, B> parseAndDoPartsWithTimes(part1: (A) -> B, part2: (A) -> B, parseInput: () -> A) {
+
+    val source = TimeSource.Monotonic
+    val start = source.markNow()
+
+    val parsedInput = parseInput()
+
+    val parseTime = source.markNow()
+    val parseDiff = parseTime - start
+
+    println("Parse time: ${parseDiff.inWholeMilliseconds}ms")
+
+    doPartsWithTimes(parsedInput, part1, part2, start)
+
+}
+
+fun getStaticDirXY(): List<String> {
+    return listOf("UP", "RX", "DW", "LF")
 }
 
 fun String.getDirXY(): List<Int> {
@@ -163,6 +183,40 @@ fun String.switchDir(): String {
         "DW" -> "LF"
         "LF" -> "UP"
         else -> ""
+    }
+}
+
+fun getStaticDiagonalDirXY(): List<String> {
+    return listOf("UL", "UR", "DR", "DL")
+}
+
+fun String.getDiagonalDirXY(): List<Int> {
+    return when (this) {
+        "UL" -> listOf(-1, -1)
+        "UR" -> listOf(-1, 1)
+        "DR" -> listOf(1, 1)
+        "DL" -> listOf(1, -1)
+        else -> listOf(0, 0)
+    }
+}
+
+fun String.switchDiagonalDir(): String {
+    return when (this) {
+        "UL" -> "UR"
+        "UR" -> "DR"
+        "DR" -> "DL"
+        "DL" -> "UL"
+        else -> ""
+    }
+}
+
+fun String.getDirsFromDiagonal(): List<String> {
+    return when (this) {
+        "UL" -> listOf("LF", "UP")
+        "UR" -> listOf("UP", "RX")
+        "DR" -> listOf("RX", "DW")
+        "DL" -> listOf("DW", "LF")
+        else -> listOf("", "")
     }
 }
 

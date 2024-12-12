@@ -29,7 +29,7 @@ private fun startExploreGarden(garden: List<List<String>>): Int {
     uniqueLetterGarden.println()
     var totCount = 0
     for (unique in uniqueLetterGarden) {
-        var keyCount = unique.value.first.size * unique.value.second.size
+        val keyCount = unique.value.first.size * ((4 * unique.value.first.size) - (2 * unique.value.second.size))
         println("Calculating ${unique.key} = $keyCount")
         totCount += keyCount
     }
@@ -43,6 +43,12 @@ private fun exploreGarden(letter: String, letterPosition: Pair<Int, Int>, oldPos
         println("[$letter $letterPosition] Added letter to unique garden $uniqueLetterGarden")
     }
 
+    if (uniqueLetterGarden[letter]!!.first.find { it.first == letterPosition.first && it.second == letterPosition.second } != null) {
+        println("[$letter $letterPosition] Unique found")
+        return 0
+    }
+    uniqueLetterGarden[letter]!!.first.add(Pair(letterPosition.first, letterPosition.second))
+
     if (!(letterPosition.first == oldPosition.first && letterPosition.second == oldPosition.second)) {
         if (uniqueLetterGarden[letter]!!.second.find { it.first == oldPosition.first && it.second == oldPosition.second && it.third == letterPosition.first && it.fourth == letterPosition.second } == null) {
             uniqueLetterGarden[letter]!!.second.add(
@@ -55,12 +61,6 @@ private fun exploreGarden(letter: String, letterPosition: Pair<Int, Int>, oldPos
             )
         }
     }
-
-    if (uniqueLetterGarden[letter]!!.first.find { it.first == letterPosition.first && it.second == letterPosition.second } != null) {
-        println("[$letter $letterPosition] Unique found")
-        return 0
-    }
-    uniqueLetterGarden[letter]!!.first.add(Pair(letterPosition.first, letterPosition.second))
 
     var letterCount = 1
     for (d in listOf("RX", "DW", "LF", "UP")) {
