@@ -12,7 +12,6 @@ fun main() {
     val input = readInput("Day12")
 
     garden = parse12(input)
-    //val formattedOutput = startExploreGarden()
 
     parseAndDoPartsWithTimes(::part1, ::part2, ::startExploreGarden)
 
