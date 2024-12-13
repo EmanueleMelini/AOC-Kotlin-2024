@@ -109,9 +109,7 @@ private fun getMoney(
 ): Int {
     var totCount = 0
     for (unique in uniqueLetterGarden) {
-        val secondValue = getSecondValue(unique.value)
-        val keyCount = unique.value.first.size * secondValue
-        totCount += keyCount
+        totCount += (unique.value.first.size * getSecondValue(unique.value))
     }
     return totCount
 }
