@@ -1,66 +1,14 @@
+private const val OFFSET = 10000000000000L
+
 fun main() {
-    fun part1(input1: List<String>): Int {
+    fun part1(input1: List<String>): Long {
         val clawMachines = parse13(input1)
-        //clawMachines.println()
-
-        var tokens = 0
-
-        for ((cI, claw) in clawMachines.withIndex()) {
-
-            //println("Trying claw $claw ($cI)")
-
-            var minB = claw.third.first / claw.second.first
-
-            //println("[CLAW-$cI] minB $minB")
-
-            if (claw.third.first % claw.second.first == 0 && minB <= 100) {
-                //println("[CLAW-$cI] Best case all B")
-                tokens += minB
-                continue
-            }
-
-            minB = minOf(minB, 100)
-
-            //println("[CLAW-$cI] Mid case do the cycle")
-
-            for (i in (1..minB).reversed()) {
-
-                //println("[CLAW-$cI] Trying with $i B")
-
-                var currentX = i * claw.second.first
-                var currentY = i * claw.second.second
-
-                //println("[CLAW-$cI] With $i B we have X=$currentX Y=$currentY")
-
-                var aCount = 0
-
-                do {
-                    aCount++
-
-                    if (aCount == 100) break
-
-                    //println("[CLAW-$cI] Trying $i B with $aCount A")
-                    currentX += claw.first.first
-                    currentY += claw.first.second
-
-                    //println("[CLAW-$cI] With $aCount A we have X=$currentX (${claw.first.first}) Y=$currentY (${claw.first.second})")
-
-                } while (currentX < claw.third.first && currentY < claw.third.second)
-
-                if (currentX == claw.third.first && currentY == claw.third.second) {
-                    tokens += i + (aCount * 3)
-                }
-
-            }
-
-        }
-
-        return tokens
+        return doMaths(clawMachines)
     }
 
-    fun part2(input2: List<String>): Int {
-
-        return 0
+    fun part2(input2: List<String>): Long {
+        val clawMachines = parse13(input2)
+        return doMaths(clawMachines, true)
     }
 
     val input = readInput("Day13")
@@ -68,25 +16,25 @@ fun main() {
 
 }
 
-private fun parse13(inputData: List<String>): List<Triple<Pair<Int, Int>, Pair<Int, Int>, Pair<Int, Int>>> {
-    val clawMachines = mutableListOf<Triple<Pair<Int, Int>, Pair<Int, Int>, Pair<Int, Int>>>()
-    var aButton: Pair<Int, Int>? = null
-    var bButton: Pair<Int, Int>? = null
+private fun parse13(inputData: List<String>): List<Triple<Pair<Long, Long>, Pair<Long, Long>, Pair<Long, Long>>> {
+    val clawMachines = mutableListOf<Triple<Pair<Long, Long>, Pair<Long, Long>, Pair<Long, Long>>>()
+    var aButton: Pair<Long, Long>? = null
+    var bButton: Pair<Long, Long>? = null
     var step = 0
     for (line in inputData) {
         when (step) {
             0 -> {
-                val (x, y) = line.split(", ").map { it.replace(Regex("\\D"), "").toInt() }
+                val (x, y) = line.split(", ").map { it.replace(Regex("\\D"), "").toLong() }
                 aButton = Pair(x, y)
                 step++
             }
             1 -> {
-                val (x, y) = line.split(", ").map { it.replace(Regex("\\D"), "").toInt() }
+                val (x, y) = line.split(", ").map { it.replace(Regex("\\D"), "").toLong() }
                 bButton = Pair(x, y)
                 step++
             }
             2 -> {
-                val (x, y) = line.split(", ").map { it.replace(Regex("\\D"), "").toInt() }
+                val (x, y) = line.split(", ").map { it.replace(Regex("\\D"), "").toLong() }
                 val prize = Pair(x, y)
                 clawMachines.add(Triple(aButton!!, bButton!!, prize))
                 step++
@@ -98,4 +46,20 @@ private fun parse13(inputData: List<String>): List<Triple<Pair<Int, Int>, Pair<I
         }
     }
     return clawMachines
+}
+
+private fun doMaths(clawMachines: List<Triple<Pair<Long, Long>, Pair<Long, Long>, Pair<Long, Long>>>, part2: Boolean = false): Long {
+    var tokens = 0L
+    for (claw in clawMachines) {
+        val cX = if (part2) claw.third.first + OFFSET else claw.third.first
+        val cY = if (part2) claw.third.second + OFFSET else claw.third.second
+        val aX = ((cX * claw.second.second) - (claw.second.first * cY))
+        val aY = ((claw.first.first * claw.second.second) - (claw.first.second * claw.second.first))
+        val bX = ((claw.first.first * cY) - (cX * claw.first.second))
+        val bY = ((claw.first.first * claw.second.second) - (claw.first.second * claw.second.first))
+        if (aX % aY == 0L && bX % bY == 0L) {
+            tokens += ((aX / aY * 3) + (bX / bY))
+        }
+    }
+    return tokens
 }
