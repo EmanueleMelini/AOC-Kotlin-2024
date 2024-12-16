@@ -35,6 +35,17 @@ data class Quadruple<A,B,C,D>(var first: A, var second: B, var third: C, var fou
 }
 
 /**
+ * Mutable Pair class for Kotlin
+ */
+data class MutablePair<A, B>(var first: A, var second: B): Serializable {
+    override fun toString(): String = "($first, $second)"
+
+    fun checkIsCopy(another: MutablePair<A, B>): Boolean {
+        return setOf(first, second) == setOf(another.first, another.second)
+    }
+}
+
+/**
  * Math expressions evaluation function
  */
 fun evaluate(str: String): Double {
