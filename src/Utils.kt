@@ -46,6 +46,17 @@ data class MutablePair<A, B>(var first: A, var second: B): Serializable {
 }
 
 /**
+ * Mutable Triple class for Kotlin
+ */
+data class MutableTriple<A, B, C>(var first: A, var second: B, var third: C): Serializable {
+    override fun toString(): String = "($first, $second, $third)"
+
+    fun checkIsCopy(another: MutableTriple<A, B, C>): Boolean {
+        return setOf(first, second, third) == setOf(another.first, another.second, another.third)
+    }
+}
+
+/**
  * Math expressions evaluation function
  */
 fun evaluate(str: String): Double {
@@ -228,6 +239,30 @@ fun String.getDirsFromDiagonal(): List<String> {
         "DR" -> listOf("RX", "DW")
         "DL" -> listOf("DW", "LF")
         else -> listOf("", "")
+    }
+}
+
+fun getStaticArrowDirXY(): List<String> {
+    return listOf("^", ">", "v", "<")
+}
+
+fun String.getArrowDirXY(): List<Int> {
+    return when (this) {
+        "^" -> listOf(-1, 0)
+        ">" -> listOf(0, 1)
+        "v" -> listOf(1, 0)
+        "<" -> listOf(0, -1)
+        else -> listOf(0, 0)
+    }
+}
+
+fun String.switchArrowDir(): String {
+    return when (this) {
+        "^" -> ">"
+        ">" -> "v"
+        "v" -> "<"
+        "<" -> "^"
+        else -> ""
     }
 }
 
